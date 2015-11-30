@@ -29,8 +29,8 @@ public class SymmetricTabController implements Initializable {
     public ToggleButton sym_tog_file_auto;
     public TextField sym_edit_source_file;
     public TextField sym_edit_dest_file;
-    public ChoiceBox sym_drop_enc_mode;
-    public ChoiceBox sym_drop_alg;
+    public ChoiceBox<CipherModeEnum> sym_drop_enc_mode;
+    public ChoiceBox<CipherAlgsEnum> sym_drop_alg;
     public Button sym_btn_encrypt;
     public Button sym_btn_select_source;
     public Button sym_btn_select_dest;
@@ -104,7 +104,9 @@ public class SymmetricTabController implements Initializable {
         });
 
         sym_drop_enc_mode.setItems(new ImmutableObservableList<>(CipherModeEnum.values()));
+        sym_drop_enc_mode.setValue(CipherModeEnum.CBC);
         sym_drop_alg.setItems(new ImmutableObservableList<>(CipherAlgsEnum.values()));
+        sym_drop_alg.setValue(CipherAlgsEnum.DES);
     }
 
     private String getNewRandomKey() {
