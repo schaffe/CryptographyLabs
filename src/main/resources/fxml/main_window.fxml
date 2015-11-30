@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
-  <tabs>
-    <Tab text="Симетричне шифрування">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Label layoutX="14.0" layoutY="14.0" text="Ключ" />
-                  <TextField layoutX="175.0" layoutY="9.0" />
-               </children></AnchorPane>
-      </content>
-    </Tab>
-    <Tab text="Асиметричне шифрування">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-      </content>
-    </Tab>
-  </tabs>
+<TabPane maxHeight="-Infinity" maxWidth="600" minHeight="-Infinity" minWidth="600" prefHeight="400.0" prefWidth="600.0"
+         scaleShape="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8"
+         xmlns:fx="http://javafx.com/fxml/1">
+    <tabs>
+        <Tab text="Симетричне шифрування">
+            <fx:include fx:id="fooTabPage" source="sym_tab.fxml"/>
+        </Tab>
+        <Tab text="Асиметричне шифрування">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+        </Tab>
+    </tabs>
 </TabPane>
