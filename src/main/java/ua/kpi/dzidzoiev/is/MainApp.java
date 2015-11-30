@@ -15,8 +15,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         String fxmlFile = "/fxml/main_window.fxml";
-        FXMLLoader loader = new FXMLLoader();
-        Parent root = loader.load(getClass().getResourceAsStream(fxmlFile));
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlFile));
         stage.setTitle("JavaFX and Maven");
         stage.setScene(new Scene(root));
         stage.show();
