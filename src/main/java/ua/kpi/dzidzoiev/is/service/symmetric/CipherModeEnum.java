@@ -5,10 +5,9 @@ package ua.kpi.dzidzoiev.is.service.symmetric;
  */
 public enum CipherModeEnum {
     ECB(1),
-    CBC(2),
-    PCBC(3),
-    CFB(4),
-    OFB(5);
+    CBC(2);
+//    CFB(4),
+//    OFB(5);
 
     private int order;
 
