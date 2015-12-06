@@ -5,11 +5,12 @@
 <TabPane maxHeight="-Infinity" maxWidth="600" minHeight="-Infinity" minWidth="600" prefHeight="400.0" prefWidth="600.0"
          scaleShape="false" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8"
          xmlns:fx="http://javafx.com/fxml/1"
+
          >
     <Tab text="Симетричне шифрування">
         <fx:include fx:id="symmTabCtrl" source="sym_tab.fxml"/>
     </Tab>
-    <Tab text="Асиметричне шифрування">
+    <Tab text="Асиметричне шифрування" disable="true">
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
     </Tab>
 </TabPane>

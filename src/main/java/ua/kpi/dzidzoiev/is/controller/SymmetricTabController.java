@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import ua.kpi.dzidzoiev.is.service.SymmetricService;
-import ua.kpi.dzidzoiev.is.service.symmetric.CipherInstance;
+import ua.kpi.dzidzoiev.is.service.symmetric.CipherDescription;
 
 import java.io.File;
 import java.net.URL;
@@ -31,8 +31,8 @@ public class SymmetricTabController implements Initializable {
     public ToggleButton sym_tog_file_auto;
     public TextField sym_edit_source_file;
     public TextField sym_edit_dest_file;
-    public ChoiceBox<String> sym_drop_enc_mode;
-    public ChoiceBox<String> sym_drop_alg;
+//    public ChoiceBox<CipherDescription> sym_drop_enc_mode;
+    public ChoiceBox<CipherDescription> sym_drop_alg;
     public Button sym_btn_encrypt;
     public Button sym_btn_select_source;
     public Button sym_btn_select_dest;
@@ -44,7 +44,7 @@ public class SymmetricTabController implements Initializable {
     private File destFile;
 
     private SymmetricService service;
-    private List<String> algs;
+    private List<CipherDescription> algs;
 
     public SymmetricTabController() {
         service = new SymmetricService();
@@ -54,6 +54,7 @@ public class SymmetricTabController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         sym_tog_key_auto.setSelected(true);
         setKey(getNewRandomKey());
+        sym_edit_key.setText(getKey());
         sym_tog_key_auto.setOnAction(e -> {
             boolean selected = sym_tog_key_auto.isSelected();
             if (selected) {
@@ -114,19 +115,19 @@ public class SymmetricTabController implements Initializable {
 
         sym_drop_alg.setItems(FXCollections.observableArrayList(algs));
         sym_drop_alg.getSelectionModel().selectFirst();
-        sym_drop_alg.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            String value = algs.get(newValue.intValue());
-            List<String> modes = service.getAvailableCiphers().stream()
-                    .filter(c -> c.getAlg().equals(value))
-                    .map((c) ->
-                            String.join("/",
-                                    c.getMode(),
-                                    c.getPadding(),
-                                    Integer.toString(c.getKeySize())))
-                    .sorted()
-                    .collect(Collectors.toList());
-            sym_drop_enc_mode.setItems(FXCollections.observableArrayList(modes));
-        });
+//        sym_drop_alg.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+//            String value = algs.get(newValue.intValue());
+//            List<String> modes = service.getAvailableCiphers().stream()
+//                    .filter(c -> c.getAlg().equals(value))
+//                    .map((c) ->
+//                            String.join("/",
+//                                    c.getMode(),
+//                                    c.getPadding(),
+//                                    Integer.toString(c.getBlockSize())))
+//                    .sorted()
+//                    .collect(Collectors.toList());
+//            sym_drop_enc_mode.setItems(FXCollections.observableArrayList(modes));
+//        });
 
         sym_btn_encrypt.setOnAction(e -> {
 //            service.enctypt("qwd".getBytes(), getKey().getBytes(), sym_drop_alg.getValue(), sym_drop_enc_mode.getValue() );
@@ -166,10 +167,9 @@ public class SymmetricTabController implements Initializable {
         return this;
     }
 
-    public List<String> getAlgorithms() {
+    public List<CipherDescription> getAlgorithms() {
         return service.getAvailableCiphers().stream()
-                .map(CipherInstance::getAlg)
-                .sorted()
+                .sorted((c1, c2) -> c1.toString().compareTo(c2.toString()))
                 .collect(Collectors.toList());
     }
 }
