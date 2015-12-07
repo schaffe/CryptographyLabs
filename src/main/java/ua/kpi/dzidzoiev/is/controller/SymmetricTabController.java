@@ -16,17 +16,15 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static ua.kpi.dzidzoiev.is.service.Holder.Log;
 
 /**
  * Created by dzidzoiev on 11/30/15.
  */
 public class SymmetricTabController implements Initializable {
 
-    public static final Logger LOG = Logger.getLogger(SymmetricTabController.class.getName());
-
-    public ToggleButton sym_tog_key_auto;
     public TextField sym_edit_key;
     public ToggleButton sym_tog_file_auto;
     public TextField sym_edit_source_file;
@@ -38,41 +36,40 @@ public class SymmetricTabController implements Initializable {
     public Button sym_btn_select_dest;
     public Button sym_btn_decrypt;
     public GridPane sym_root;
+    public Button sym_btn_refresh_key;
 
-    private String key;
     private File sourceFile;
     private File destFile;
 
-    private SymmetricService service;
+    private SymmetricService symmetricService;
     private List<CipherDescription> algs;
 
     public SymmetricTabController() {
-        service = new SymmetricService();
+        symmetricService = new SymmetricService();
         algs = getAlgorithms();
     }
 
     public void initialize(URL location, ResourceBundle resources) {
-        sym_tog_key_auto.setSelected(true);
-        setKey(getNewRandomKey());
-        sym_edit_key.setText(getKey());
-        sym_tog_key_auto.setOnAction(e -> {
-            boolean selected = sym_tog_key_auto.isSelected();
-            if (selected) {
-                sym_edit_key.setDisable(true);
-                setKey(getNewRandomKey());
-            } else {
-                sym_edit_key.setDisable(false);
-                setKey("");
-            }
-            sym_edit_key.setText(getKey());
-        });
+//        sym_tog_key_auto.setSelected(true);
+//
+//        sym_tog_key_auto.setOnAction(e -> {
+//            boolean selected = sym_tog_key_auto.isSelected();
+//            if (selected) {
+//                sym_edit_key.setEditable(false);
+//                setKey(getNewRandomKey());
+//            } else {
+//                sym_edit_key.setEditable(true);
+//                setKey("");
+//            }
+//            sym_edit_key.setText(getKey());
+//        });
 
-        sym_edit_key.setDisable(true);
-        sym_edit_key.setOnKeyReleased(e -> {
-                    setKey(sym_edit_key.getText());
-                    System.out.println(getKey());
-                }
-        );
+//        sym_edit_key.setEditable(false);
+//        sym_edit_key.setOnKeyReleased(e -> {
+//                    setKey(sym_edit_key.getText());
+//                    System.out.println(getKey());
+//                }
+//        );
 
         sym_tog_file_auto.setSelected(true);
         sym_tog_file_auto.setOnAction(e -> {
@@ -97,7 +94,7 @@ public class SymmetricTabController implements Initializable {
             fileChooser.setTitle("Вихідний файл");
             File chosenFile = fileChooser.showOpenDialog(sym_root.getScene().getWindow());
             if (chosenFile != null) {
-                LOG.info("Source file chosen " + chosenFile.getAbsolutePath());
+                Log.info("Source file chosen " + chosenFile.getAbsolutePath());
                 setSourceFile(chosenFile);
             }
         });
@@ -108,43 +105,34 @@ public class SymmetricTabController implements Initializable {
             fileChooser.setTitle("Папка для збереження");
             File chosenFile = fileChooser.showDialog(sym_root.getScene().getWindow());
             if (chosenFile != null) {
-                LOG.info("Dest file chosen " + chosenFile.getAbsolutePath());
+                Log.info("Dest file chosen " + chosenFile.getAbsolutePath());
                 setDestFile(chosenFile);
             }
         });
 
         sym_drop_alg.setItems(FXCollections.observableArrayList(algs));
         sym_drop_alg.getSelectionModel().selectFirst();
-//        sym_drop_alg.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-//            String value = algs.get(newValue.intValue());
-//            List<String> modes = service.getAvailableCiphers().stream()
-//                    .filter(c -> c.getAlg().equals(value))
-//                    .map((c) ->
-//                            String.join("/",
-//                                    c.getMode(),
-//                                    c.getPadding(),
-//                                    Integer.toString(c.getBlockSize())))
-//                    .sorted()
-//                    .collect(Collectors.toList());
-//            sym_drop_enc_mode.setItems(FXCollections.observableArrayList(modes));
-//        });
 
         sym_btn_encrypt.setOnAction(e -> {
-//            service.enctypt("qwd".getBytes(), getKey().getBytes(), sym_drop_alg.getValue(), sym_drop_enc_mode.getValue() );
+//            symmetricService.enctypt("qwd".getBytes(), getKey().getBytes(), sym_drop_alg.getValue(), sym_drop_enc_mode.getValue() );
         });
+
+        sym_btn_refresh_key.setOnAction(e -> {
+            regenerateKey();
+        });
+        regenerateKey();
+    }
+
+    private void regenerateKey() {
+        sym_edit_key.setText(getNewRandomKey());
     }
 
     private String getNewRandomKey() {
-        return "stub";
+        return symmetricService.generateKey(getSelectedCipherDescription());
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public SymmetricTabController setKey(String key) {
-        this.key = key;
-        return this;
+    private CipherDescription getSelectedCipherDescription() {
+        return sym_drop_alg.getSelectionModel().selectedItemProperty().get();
     }
 
     public File getSourceFile() {
@@ -168,7 +156,7 @@ public class SymmetricTabController implements Initializable {
     }
 
     public List<CipherDescription> getAlgorithms() {
-        return service.getAvailableCiphers().stream()
+        return symmetricService.getAvailableCiphers().stream()
                 .sorted((c1, c2) -> c1.toString().compareTo(c2.toString()))
                 .collect(Collectors.toList());
     }

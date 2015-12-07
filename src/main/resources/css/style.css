@@ -1,0 +1,21 @@
+#sym_btn_select_source {
+    -fx-background-image: url("../icons/file.png");
+    -fx-background-size: 18 18;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#sym_btn_select_dest {
+    -fx-background-image: url("../icons/folder.png");
+    -fx-background-size: 18 18;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#sym_btn_refresh_key {
+    -fx-background-image: url("../icons/refresh.png");
+    -fx-background-size: 18 18;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+

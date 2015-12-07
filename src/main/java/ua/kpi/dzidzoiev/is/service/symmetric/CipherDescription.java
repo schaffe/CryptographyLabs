@@ -3,6 +3,9 @@ package ua.kpi.dzidzoiev.is.service.symmetric;
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+
+import static ua.kpi.dzidzoiev.is.service.Holder.Log;
 
 /**
  * Created by dzidzoiev on 12/1/15.
@@ -26,11 +29,15 @@ public class CipherDescription {
         this.blockSize = blockSize;
     }
 
-    public CipherDescription(String alg, String mode, String padding) throws NoSuchPaddingException, NoSuchAlgorithmException {
+    public CipherDescription(String alg, String mode, String padding) {
         this.alg = alg;
         this.mode = mode;
         this.padding = padding;
-        this.cipher = Cipher.getInstance(this.toInitString());
+        try {
+            this.cipher = Cipher.getInstance(this.toInitString());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            Log.log(Level.SEVERE, "Exception occur", e);
+        }
         this.blockSize = cipher.getBlockSize();
     }
 
@@ -76,12 +83,6 @@ public class CipherDescription {
 
     @Override
     public String toString() {
-        return String.join("/", alg, mode, padding) + " (" + blockSize + ")";
+        return String.join("/", alg, mode, padding) + " (" + (blockSize * 8) + ")";
     }
-
-    public static void main(String[] args) {
-
-    }
-
-
 }

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
 
 <GridPane fx:id="sym_root" prefHeight="366.0" prefWidth="600.0" style="-fx-padding: 5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ua.kpi.dzidzoiev.is.controller.SymmetricTabController">
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="195.0" />
         <ColumnConstraints hgrow="SOMETIMES" maxWidth="379.0" minWidth="10.0" prefWidth="366.0" />
@@ -22,9 +26,9 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
     </rowConstraints>
    <children>
-       <TextField fx:id="sym_edit_key" prefHeight="25.0" prefWidth="193.0" promptText="Введіть ключ" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-       <ToggleButton fx:id="sym_tog_key_auto" mnemonicParsing="false" text="Автоматично" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-       <Label text="Вибір ключа" GridPane.rowIndex="1" />
+       <TextField fx:id="sym_edit_key" prefHeight="25.0" prefWidth="193.0" promptText="Введіть ключ" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+       <Button fx:id="sym_btn_refresh_key" alignment="CENTER_RIGHT" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+       <Label text="Ключ" GridPane.rowIndex="1" />
        <Label text="Вихідний файл" GridPane.rowIndex="3" />
        <ToggleButton fx:id="sym_tog_file_auto" mnemonicParsing="false" text="Автоматично" GridPane.columnIndex="1" GridPane.rowIndex="3" />
        <TextField fx:id="sym_edit_source_file" prefHeight="25.0" prefWidth="330.0" promptText="Вихідний файл" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -35,8 +39,8 @@
        <Label text="Алгоритм шифрування" />
        <ChoiceBox fx:id="sym_drop_alg" minWidth="250.0" prefWidth="150.0" GridPane.columnIndex="1" />
        <Button fx:id="sym_btn_encrypt" mnemonicParsing="false" text="Зашифрувати" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-       <Button fx:id="sym_btn_select_source" alignment="CENTER_RIGHT" mnemonicParsing="false" text="/" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-       <Button fx:id="sym_btn_select_dest" alignment="CENTER_RIGHT" mnemonicParsing="false" text="/" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+       <Button fx:id="sym_btn_select_source" alignment="CENTER_RIGHT" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+       <Button fx:id="sym_btn_select_dest" alignment="CENTER_RIGHT" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
        <Label text="Зберегти у" GridPane.rowIndex="5" />
        <Button fx:id="sym_btn_decrypt" mnemonicParsing="false" text="Розшифрувати" GridPane.rowIndex="7" />
    </children>
