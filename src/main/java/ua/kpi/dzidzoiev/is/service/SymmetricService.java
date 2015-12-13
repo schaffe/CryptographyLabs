@@ -180,7 +180,7 @@ public class SymmetricService {
         String key = service.generateKey(cipherDescription);
         System.out.println("key: " + key);
         String message = "ацуп34н5рук 634цр 45 4цукіен ghrt yttr en";
-//        String encrypted = new String(service.encrypt(key.getBytes(UTF_8), message.getBytes(UTF_8), iv, cipherDescription));
+//        String encrypted = new String(service.encryptInit(key.getBytes(UTF_8), message.getBytes(UTF_8), iv, cipherDescription));
 //        String decrypted = new String(service.decrypt(key.getBytes(UTF_8), encrypted.getBytes(UTF_8), iv, cipherDescription));
         String encrypted = service.encrypt(message, key, cipherDescription);
         String decrypted = service.decrypt(encrypted, key, cipherDescription);
