@@ -7,7 +7,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -19,6 +18,10 @@ import java.security.SecureRandom;
 public class StatefulSymmetricEncoder {
 
     private Cipher cipher;
+
+    public Cipher getCipher() {
+        return cipher;
+    }
 
     public byte[] generateKey(int blockSize) {
         final byte[] keyData = new byte[blockSize];
@@ -76,13 +79,11 @@ public class StatefulSymmetricEncoder {
         }
     }
 
-    public void decryptInit(final String ivAndEncryptedMessageBase64,
+    public void decryptInit(final byte[] iv,
                             final String symKeyHex,
                             final CipherDescription cipherDescription) {
         final byte[] symKeyData = HashService.get(symKeyHex, cipherDescription.getBlockSize());
-        final byte[] ivAndEncryptedMessage = DatatypeConverter
-                .parseBase64Binary(ivAndEncryptedMessageBase64);
-        decryptInit(ivAndEncryptedMessage, symKeyData, cipherDescription);
+        decryptInit(iv, symKeyData, cipherDescription);
     }
 
     public void decryptInit(final byte[] ivData,
@@ -109,6 +110,7 @@ public class StatefulSymmetricEncoder {
             throw new IllegalArgumentException(
                     "key argument does not contain a valid AES key");
         } catch (BadPaddingException e) {
+            e.printStackTrace();
             return null;
         }
     }
