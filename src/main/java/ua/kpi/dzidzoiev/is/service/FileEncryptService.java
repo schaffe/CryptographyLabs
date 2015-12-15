@@ -41,6 +41,7 @@ public class FileEncryptService {
             while ((count = sourceStream.read(buffer)) > 0) {
                 cipherOutputStream.write(buffer, offset, count );
             }
+            cipherOutputStream.flush();
             cipherOutputStream.close();
 
             return newName;
@@ -80,7 +81,7 @@ public class FileEncryptService {
                 outputStream.write(buffer, offset, count );
             }
             cipherInputStream.close();
-
+            outputStream.flush();
             return newName;
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,9 +101,9 @@ public class FileEncryptService {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         FileEncryptService fileEncryptService = new FileEncryptService();
-//        URL fileUrl = MainApp.class.getClassLoader().getResource("file/test.txt");
+        URL fileUrl = MainApp.class.getClassLoader().getResource("file/test.txt");
         URL folderUrl = MainApp.class.getClassLoader().getResource("file");
-        URL fileUrl = MainApp.class.getClassLoader().getResource("file/test_big.txt");
+//        URL fileUrl = MainApp.class.getClassLoader().getResource("file/test_big.txt");
         System.out.println(fileUrl);
         String encrFile = fileEncryptService.encrypt(fileUrl.getFile(), folderUrl.getFile(), new CipherDescription("AES", "CBC", "PKCS5Padding"), "key");
         fileEncryptService.decrypt(encrFile, folderUrl.getFile(), new CipherDescription("AES", "CBC", "PKCS5Padding"), "key");

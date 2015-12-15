@@ -2,11 +2,9 @@ package ua.kpi.dzidzoiev.is.controller;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import ua.kpi.dzidzoiev.is.service.FileEncryptService;
@@ -15,6 +13,8 @@ import ua.kpi.dzidzoiev.is.service.SymmetricService;
 import ua.kpi.dzidzoiev.is.service.symmetric.CipherDescription;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,7 +31,7 @@ public class SymmetricTabController implements Initializable {
     public ToggleButton sym_tog_file_auto;
     public TextField sym_edit_source_file;
     public TextField sym_edit_dest_file;
-//    public ChoiceBox<CipherDescription> sym_drop_enc_mode;
+    //    public ChoiceBox<CipherDescription> sym_drop_enc_mode;
     public ChoiceBox<CipherDescription> sym_drop_alg;
     public Button sym_btn_encrypt;
     public Button sym_btn_select_source;
@@ -120,26 +120,79 @@ public class SymmetricTabController implements Initializable {
         sym_drop_alg.getSelectionModel().selectFirst();
 
         sym_btn_encrypt.setOnAction(e -> {
-            String newFile = fileEncryptService.encrypt(
-                    sym_edit_source_file.getText(),
-                    sym_edit_dest_file.getText(),
-                    sym_drop_alg.getValue(),
-                    sym_edit_key.getText());
-            sym_edit_source_file.setText(newFile);
+            try {
+                String newFile = fileEncryptService.encrypt(
+                        sym_edit_source_file.getText(),
+                        sym_edit_dest_file.getText(),
+                        sym_drop_alg.getValue(),
+                        sym_edit_key.getText());
+                sym_edit_source_file.setText(newFile);
+                createDialog("Шифрування завершено.");
+            } catch (Exception ex) {
+                createExceptionDialog(ex);
+            }
         });
 
-        sym_btn_decrypt.setOnAction( e -> {
-            fileEncryptService.decrypt(
-                    sym_edit_source_file.getText(),
-                    sym_edit_dest_file.getText(),
-                    sym_drop_alg.getValue(),
-                    sym_edit_key.getText());
+        sym_btn_decrypt.setOnAction(e -> {
+            try {
+                String newFile = fileEncryptService.decrypt(
+                        sym_edit_source_file.getText(),
+                        sym_edit_dest_file.getText(),
+                        sym_drop_alg.getValue(),
+                        sym_edit_key.getText());
+                createDialog("Розшифрування завершено.");
+            } catch (Exception ex) {
+                createExceptionDialog(ex);
+            }
         });
 
         sym_btn_refresh_key.setOnAction(e -> {
             regenerateKey();
         });
         regenerateKey();
+    }
+
+    private void createDialog(String text) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+
+        alert.showAndWait();
+    }
+
+    private void createExceptionDialog(Throwable ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setHeaderText("Look, an Exception Dialog");
+        alert.setContentText("Could not find file blabla.txt!");
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
     }
 
     private void regenerateKey() {
