@@ -9,6 +9,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import ua.kpi.dzidzoiev.is.service.FileEncryptService;
+import ua.kpi.dzidzoiev.is.service.FileHelper;
 import ua.kpi.dzidzoiev.is.service.SymmetricService;
 import ua.kpi.dzidzoiev.is.service.symmetric.CipherDescription;
 
@@ -38,14 +40,13 @@ public class SymmetricTabController implements Initializable {
     public GridPane sym_root;
     public Button sym_btn_refresh_key;
 
-    private File sourceFile;
-    private File destFile;
-
     private SymmetricService symmetricService;
+    private FileEncryptService fileEncryptService;
     private List<CipherDescription> algs;
 
     public SymmetricTabController() {
         symmetricService = new SymmetricService();
+        fileEncryptService = new FileEncryptService();
         algs = getAlgorithms();
     }
 
@@ -86,7 +87,8 @@ public class SymmetricTabController implements Initializable {
 
         sym_edit_source_file.setDisable(true);
         sym_edit_source_file.setEditable(false);
-        sym_edit_source_file.setPromptText("Файл генерується автоматично");
+        sym_edit_source_file.setText(FileHelper.getTempFile());
+//        sym_edit_source_file.setPromptText("Файл генерується автоматично");
 
         sym_btn_select_source.setDisable(true);
         sym_btn_select_source.setOnAction(e -> {
@@ -94,19 +96,23 @@ public class SymmetricTabController implements Initializable {
             fileChooser.setTitle("Вихідний файл");
             File chosenFile = fileChooser.showOpenDialog(sym_root.getScene().getWindow());
             if (chosenFile != null) {
-                Log.info("Source file chosen " + chosenFile.getAbsolutePath());
-                setSourceFile(chosenFile);
+                String absolutePath = chosenFile.getAbsolutePath();
+                Log.info("Source file chosen " + absolutePath);
+                sym_edit_source_file.setText(absolutePath);
+                sym_edit_dest_file.setText(FileHelper.getDir(absolutePath));
             }
         });
 
-        sym_edit_dest_file.setEditable(false);
+//        sym_edit_dest_file.setEditable(false);
+        sym_edit_dest_file.setText(FileHelper.getTempFolder());
         sym_btn_select_dest.setOnAction(e -> {
             DirectoryChooser fileChooser = new DirectoryChooser();
             fileChooser.setTitle("Папка для збереження");
             File chosenFile = fileChooser.showDialog(sym_root.getScene().getWindow());
             if (chosenFile != null) {
-                Log.info("Dest file chosen " + chosenFile.getAbsolutePath());
-                setDestFile(chosenFile);
+                String absolutePath = chosenFile.getAbsolutePath();
+                Log.info("Dest file chosen " + absolutePath);
+                sym_edit_dest_file.setText(absolutePath);
             }
         });
 
@@ -114,7 +120,20 @@ public class SymmetricTabController implements Initializable {
         sym_drop_alg.getSelectionModel().selectFirst();
 
         sym_btn_encrypt.setOnAction(e -> {
-//            symmetricService.enctypt("qwd".getBytes(), getKey().getBytes(), sym_drop_alg.getValue(), sym_drop_enc_mode.getValue() );
+            String newFile = fileEncryptService.encrypt(
+                    sym_edit_source_file.getText(),
+                    sym_edit_dest_file.getText(),
+                    sym_drop_alg.getValue(),
+                    sym_edit_key.getText());
+            sym_edit_source_file.setText(newFile);
+        });
+
+        sym_btn_decrypt.setOnAction( e -> {
+            fileEncryptService.decrypt(
+                    sym_edit_source_file.getText(),
+                    sym_edit_dest_file.getText(),
+                    sym_drop_alg.getValue(),
+                    sym_edit_key.getText());
         });
 
         sym_btn_refresh_key.setOnAction(e -> {
@@ -133,26 +152,6 @@ public class SymmetricTabController implements Initializable {
 
     private CipherDescription getSelectedCipherDescription() {
         return sym_drop_alg.getSelectionModel().selectedItemProperty().get();
-    }
-
-    public File getSourceFile() {
-        return sourceFile;
-    }
-
-    public SymmetricTabController setSourceFile(File sourceFile) {
-        this.sourceFile = sourceFile;
-        sym_edit_source_file.setText(sourceFile.getAbsolutePath());
-        return this;
-    }
-
-    public File getDestFile() {
-        return destFile;
-    }
-
-    public SymmetricTabController setDestFile(File destFile) {
-        this.destFile = destFile;
-        sym_edit_dest_file.setText(destFile.getAbsolutePath());
-        return this;
     }
 
     public List<CipherDescription> getAlgorithms() {
