@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import ua.kpi.dzidzoiev.is.service.FileEncryptService;
 import ua.kpi.dzidzoiev.is.service.FileHelper;
 import ua.kpi.dzidzoiev.is.service.SymmetricService;
@@ -28,7 +29,7 @@ import static ua.kpi.dzidzoiev.is.service.Holder.Log;
 public class SymmetricTabController implements Initializable {
 
     public TextField sym_edit_key;
-    public ToggleButton sym_tog_file_auto;
+//    public ToggleButton sym_tog_file_auto;
     public TextField sym_edit_source_file;
     public TextField sym_edit_dest_file;
     //    public ChoiceBox<CipherDescription> sym_drop_enc_mode;
@@ -39,6 +40,7 @@ public class SymmetricTabController implements Initializable {
     public Button sym_btn_decrypt;
     public GridPane sym_root;
     public Button sym_btn_refresh_key;
+    public Stage stage;
 
     private SymmetricService symmetricService;
     private FileEncryptService fileEncryptService;
@@ -48,6 +50,15 @@ public class SymmetricTabController implements Initializable {
         symmetricService = new SymmetricService();
         fileEncryptService = new FileEncryptService();
         algs = getAlgorithms();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public SymmetricTabController setStage(Stage stage) {
+        this.stage = stage;
+        return this;
     }
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,35 +83,60 @@ public class SymmetricTabController implements Initializable {
 //                }
 //        );
 
-        sym_tog_file_auto.setSelected(true);
-        sym_tog_file_auto.setOnAction(e -> {
-            if (sym_tog_file_auto.isSelected()) {
-                sym_edit_source_file.setDisable(true);
-                sym_edit_source_file.setPromptText("Файл генерується автоматично");
-                sym_btn_select_source.setDisable(true);
-            } else {
-                sym_edit_source_file.setDisable(false);
-                sym_edit_source_file.setPromptText("Вкажіть вихідний файл");
-                sym_btn_select_source.setDisable(false);
-            }
-        });
+//        final Scene scene = sym_root.getScene();
+//
+//        scene.setOnDragOver(event -> {
+//            Dragboard db = event.getDragboard();
+//            if (db.hasFiles()) {
+//                event.acceptTransferModes(TransferMode.COPY);
+//            } else {
+//                event.consume();
+//            }
+//        });
+//
+//        // Dropping over surface
+//        scene.setOnDragDropped(event -> {
+//            Dragboard db = event.getDragboard();
+//            boolean success = false;
+//            if (db.hasFiles()) {
+//                success = true;
+//                String filePath = null;
+//                for (File file:db.getFiles()) {
+//                    selectFile(file);
+//                }
+//            }
+//            event.setDropCompleted(success);
+//            event.consume();
+//        });
 
-        sym_edit_source_file.setDisable(true);
-        sym_edit_source_file.setEditable(false);
+//        sym_tog_file_auto.setSelected(true);
+//        sym_tog_file_auto.setOnAction(e -> {
+//            if (sym_tog_file_auto.isSelected()) {
+//                sym_edit_source_file.setDisable(true);
+//                sym_edit_source_file.setPromptText("Файл генерується автоматично");
+//                sym_btn_select_source.setDisable(true);
+//            } else {
+//                sym_edit_source_file.setDisable(false);
+//                sym_edit_source_file.setPromptText("Вкажіть вихідний файл");
+//                sym_btn_select_source.setDisable(false);
+//            }
+//            e.consume();
+//        });
+
+//        sym_edit_source_file.setDisable(true);
+//        sym_edit_source_file.setEditable(false);
         sym_edit_source_file.setText(FileHelper.getTempFile());
 //        sym_edit_source_file.setPromptText("Файл генерується автоматично");
 
-        sym_btn_select_source.setDisable(true);
+//        sym_btn_select_source.setDisable(true);
         sym_btn_select_source.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Вихідний файл");
             File chosenFile = fileChooser.showOpenDialog(sym_root.getScene().getWindow());
             if (chosenFile != null) {
-                String absolutePath = chosenFile.getAbsolutePath();
-                Log.info("Source file chosen " + absolutePath);
-                sym_edit_source_file.setText(absolutePath);
-                sym_edit_dest_file.setText(FileHelper.getDir(absolutePath));
+                selectFile(chosenFile);
             }
+            e.consume();
         });
 
 //        sym_edit_dest_file.setEditable(false);
@@ -114,6 +150,7 @@ public class SymmetricTabController implements Initializable {
                 Log.info("Dest file chosen " + absolutePath);
                 sym_edit_dest_file.setText(absolutePath);
             }
+            e.consume();
         });
 
         sym_drop_alg.setItems(FXCollections.observableArrayList(algs));
@@ -131,6 +168,7 @@ public class SymmetricTabController implements Initializable {
             } catch (Exception ex) {
                 createExceptionDialog(ex);
             }
+            e.consume();
         });
 
         sym_btn_decrypt.setOnAction(e -> {
@@ -144,12 +182,21 @@ public class SymmetricTabController implements Initializable {
             } catch (Exception ex) {
                 createExceptionDialog(ex);
             }
+            e.consume();
         });
 
         sym_btn_refresh_key.setOnAction(e -> {
             regenerateKey();
+            e.consume();
         });
         regenerateKey();
+    }
+
+    private void selectFile(File chosenFile) {
+        String absolutePath = chosenFile.getAbsolutePath();
+        Log.info("Source file chosen " + absolutePath);
+        sym_edit_source_file.setText(absolutePath);
+        sym_edit_dest_file.setText(FileHelper.getDir(absolutePath));
     }
 
     private void createDialog(String text) {

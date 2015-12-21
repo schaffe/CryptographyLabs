@@ -19,5 +19,10 @@ public class MainApp extends Application {
         stage.setTitle("Cryptography labs");
         stage.setScene(new Scene(root));
         stage.show();
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sym_tab.fxml"));
+//        Parent root = (Parent)loader.load();
+//        SymmetricTabController controller = (SymmetricTabController)loader.getController();
+//        controller.setStage(stage);
     }
 }

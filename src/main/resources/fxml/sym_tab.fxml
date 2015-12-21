@@ -30,7 +30,7 @@
        <Button fx:id="sym_btn_refresh_key" alignment="CENTER_RIGHT" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
        <Label text="Ключ" GridPane.rowIndex="1" />
        <Label text="Вихідний файл" GridPane.rowIndex="3" />
-       <ToggleButton fx:id="sym_tog_file_auto" mnemonicParsing="false" text="Автоматично" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+       <!--<ToggleButton fx:id="sym_tog_file_auto" mnemonicParsing="false" text="Автоматично" GridPane.columnIndex="1" GridPane.rowIndex="3" />-->
        <TextField fx:id="sym_edit_source_file" prefHeight="25.0" prefWidth="330.0" promptText="Вихідний файл" GridPane.columnIndex="1" GridPane.rowIndex="4" />
        <TextField fx:id="sym_edit_dest_file" promptText="Результат шифрування" GridPane.columnIndex="1" GridPane.rowIndex="5" />
        <!--<Label text="Режим шифрування" GridPane.rowIndex="6"/>-->
